@@ -37,6 +37,10 @@ namespace S3Tool
                     case Options.eAction.s3List:
                         (new S3Client(Config.S3Bucket)).ListS3();
                         break;
+
+                    case Options.eAction.signed:
+                        (new S3Client(Config.S3Bucket)).SigningDemo();
+                        break;
                 }
             }
             catch (Exception ex)

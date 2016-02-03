@@ -10,7 +10,7 @@ namespace S3Tool
 {
     internal class Options
     {
-        public enum eAction { s3Upload, s3Download, s3List }
+        public enum eAction { s3Upload, s3Download, s3List, signed }
         [Option('a', "action", HelpText = "Action: s3Upload, s3Download, s3List", Required=true)]
         public eAction Action { get; set; }
 

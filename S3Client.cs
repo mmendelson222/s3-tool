@@ -170,6 +170,15 @@ namespace S3.Common.Clients
         /// </summary>
         internal void ListS3()
         {
+            var objectList = GetS3ObjectList();
+            foreach (var o in objectList)
+            {
+                Logger.log.Info(o.Key);
+            }
+        }
+
+        private List<S3Object> GetS3ObjectList()
+        {
             ListObjectsRequest request = new ListObjectsRequest()
             {
                 BucketName = this._bucketName
@@ -178,10 +187,29 @@ namespace S3.Common.Clients
             Logger.log.InfoFormat("Listing contents of bucket {0}", this._bucketName);
 
             var response = _client.ListObjects(request);
-            foreach (var o in response.S3Objects)
+
+            var objectList = response.S3Objects;
+            return objectList;
+        }
+
+        /// <summary>
+        /// git the first item in the list, and return a signed url for it, 
+        /// which expires in 5 minutes.
+        /// </summary>
+        internal void SigningDemo()
+        {
+            var objectList = GetS3ObjectList();
+            var s3obj = objectList[0];
+
+            GetPreSignedUrlRequest urlRequest = new GetPreSignedUrlRequest()
             {
-                Logger.log.Info(o.Key);
-            }
+                BucketName = this._bucketName,
+                Key = s3obj.Key,
+                Expires = DateTime.Now.AddMinutes(5)
+            };
+
+            string url = _client.GetPreSignedURL(urlRequest);
+            Console.WriteLine(url);
         }
 
         [Obsolete("in progress.")]
@@ -235,5 +263,6 @@ namespace S3.Common.Clients
         {
             this._client.Dispose();
         }
+
     }
 }
